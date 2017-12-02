@@ -1,3 +1,16 @@
+#######################################
+#                                     #
+#    Author : Gabriel Grimberg        #
+#    Module : Cloud Computing         #
+#    Year   : Third Year              #
+#    Type   : Assignment              #
+#    About  : DockerCMS RESTFUL API   #
+#                                     #
+#######################################
+
+#
+# Imports needed for this Restful API.
+#
 from flask import Flask, Response, render_template, request
 import json
 from subprocess import Popen, PIPE
@@ -12,26 +25,34 @@ def index():
     return """
 Available API endpoints:
 
-GET /containers                     List all containers
-GET /containers?state=running      List running containers (only)
-GET /containers/<id>                Inspect a specific container
-GET /containers/<id>/logs           Dump specific container logs
-GET /images                         List all images
+GET /containers                     List all containers                          - Yes.
+GET /containers?state=running       List running containers (only)               - Not Done.
+GET /containers/<id>                Inspect a specific container                 - Yes.
+GET /containers/<id>/logs           Dump specific container logs                 - Yes.
+GET /services                       List all service                             - Not Done.
+GET /nodes                          List all nodes in the swarm                  - Not Done.
+GET /images                         List all images                              - Yes.
 
+POST /images                        Create a new image                           - Yes.
+POST /containers                    Create a new container                       - Yes.
 
-POST /images                        Create a new image
-POST /containers                    Create a new container
-
-PATCH /containers/<id>              Change a container's state
-PATCH /images/<id>                  Change a specific image's attributes
+PATCH /containers/<id>              Change a container's state                   - Yes.
+PATCH /images/<id>                  Change a specific image's attributes         - Yes.
 
 DELETE /containers/<id>             Delete a specific container
-DELETE /containers                  Delete all containers (including running)
-DELETE /images/<id>                 Delete a specific image
-DELETE /images                      Delete all images
+DELETE /containers                  Delete all containers (including running)    - Not Done.
+DELETE /images/<id>                 Delete a specific image                      - Not Done.
+DELETE /images                      Delete all images                            - Not Done.
 
 """
 
+#############################
+#          GET              #
+#############################
+
+#
+# List all containers.
+#
 @app.route('/containers', methods=['GET'])
 def containers_index():
     """
@@ -52,17 +73,10 @@ def containers_index():
     #resp = ''
     return Response(response=resp, mimetype="application/json")
 
-@app.route('/images', methods=['GET'])
-def images_index():
-    """
-    List all images 
-    
-    Complete the code below generating a valid response. 
-    """
-    
-    resp = ''
-    return Response(response=resp, mimetype="application/json")
 
+#
+# Inspect a specific container.
+#
 @app.route('/containers/<id>', methods=['GET'])
 def containers_show(id):
     """
@@ -74,6 +88,10 @@ def containers_show(id):
 
     return Response(response=resp, mimetype="application/json")
 
+
+#
+# Dump specific container logs.
+#
 @app.route('/containers/<id>/logs', methods=['GET'])
 def containers_log(id):
     """
@@ -84,44 +102,45 @@ def containers_log(id):
     return Response(response=resp, mimetype="application/json")
 
 
-@app.route('/images/<id>', methods=['DELETE'])
-def images_remove(id):
+#
+# List all images.
+#
+@app.route('/images', methods=['GET'])
+def images_index():
     """
-    Delete a specific image
+    List all images 
+    
+    Complete the code below generating a valid response. 
     """
-    docker ('rmi', id)
-    resp = '{"id": "%s"}' % id
-    return Response(response=resp, mimetype="application/json")
-
-@app.route('/containers/<id>', methods=['DELETE'])
-def containers_remove(id):
-    """
-    Delete a specific container - must be already stopped/killed
-
-    """
+    
     resp = ''
     return Response(response=resp, mimetype="application/json")
+    
 
-@app.route('/containers', methods=['DELETE'])
-def containers_remove_all():
+#############################
+#          POST             #
+#############################
+
+#
+# Create a new image.
+#
+@app.route('/images', methods=['POST'])
+def images_create():
     """
-    Force remove all containers - dangrous!
+    Create image (from uploaded Dockerfile)
+
+    curl -H 'Accept: application/json' -F file=@Dockerfile http://localhost:8080/images
 
     """
+    dockerfile = request.files['file']
+    
     resp = ''
     return Response(response=resp, mimetype="application/json")
-
-@app.route('/images', methods=['DELETE'])
-def images_remove_all():
-    """
-    Force remove all images - dangrous!
-
-    """
- 
-    resp = ''
-    return Response(response=resp, mimetype="application/json")
-
-
+  
+  
+#
+# Create a new container
+#
 @app.route('/containers', methods=['POST'])
 def containers_create():
     """
@@ -139,22 +158,13 @@ def containers_create():
     return Response(response='{"id": "%s"}' % id, mimetype="application/json")
 
 
-@app.route('/images', methods=['POST'])
-def images_create():
-    """
-    Create image (from uploaded Dockerfile)
+#############################
+#          PATCH            #
+#############################
 
-    curl -H 'Accept: application/json' -F file=@Dockerfile http://localhost:8080/images
-
-    """
-    dockerfile = request.files['file']
-    
-    resp = ''
-    return Response(response=resp, mimetype="application/json")
-
-
-
-
+#
+# Change a container's state.
+#
 @app.route('/containers/<id>', methods=['PATCH'])
 def containers_update(id):
     """
@@ -175,6 +185,10 @@ def containers_update(id):
     resp = '{"id": "%s"}' % id
     return Response(response=resp, mimetype="application/json")
 
+
+#
+# Change a specific image's attributes.
+#
 @app.route('/images/<id>', methods=['PATCH'])
 def images_update(id):
     """
@@ -185,6 +199,68 @@ def images_update(id):
     """
     resp = ''
     return Response(response=resp, mimetype="application/json")
+    
+    
+#############################
+#          DELETE           #
+#############################
+
+#
+# Delete a specific container.
+#
+@app.route('/containers/<id>', methods=['DELETE'])
+def containers_remove(id):
+    """
+    Delete a specific container - must be already stopped/killed
+
+    """
+    resp = ''
+    return Response(response=resp, mimetype="application/json")
+
+    
+#
+# Delete all containers (including running).
+#
+@app.route('/containers', methods=['DELETE'])
+def containers_remove_all():
+    """
+    Force remove all containers - dangrous!
+
+    """
+    resp = ''
+    return Response(response=resp, mimetype="application/json")
+
+ 
+#
+# Delete a specific image.
+#       
+@app.route('/images/<id>', methods=['DELETE'])
+def images_remove(id):
+    """
+    Delete a specific image
+    """
+    docker ('rmi', id)
+    resp = '{"id": "%s"}' % id
+    return Response(response=resp, mimetype="application/json")
+
+
+#
+# Delete all images.
+#
+@app.route('/images', methods=['DELETE'])
+def images_remove_all():
+    """
+    Force remove all images - dangrous!
+
+    """
+ 
+    resp = ''
+    return Response(response=resp, mimetype="application/json")
+
+
+##############################
+#    End of API Endpoints    #
+##############################
 
 
 def docker(*args):
@@ -197,9 +273,10 @@ def docker(*args):
         print 'Error: {0} -> {1}'.format(' '.join(cmd), stderr)
     return stderr + stdout
 
-# 
-# Docker output parsing helpers
-#
+
+# ###############################
+# Docker output parsing helpers #
+#################################
 
 #
 # Parses the output of a Docker PS command to a python List
@@ -215,9 +292,11 @@ def docker_ps_to_array(output):
         all.append(each)
     return all
 
+
 #
 # Parses the output of a Docker logs command to a python Dictionary
 # (Key Value Pair object)
+#
 def docker_logs_to_object(id, output):
     logs = {}
     logs['id'] = id
@@ -226,6 +305,7 @@ def docker_logs_to_object(id, output):
         all.append(line)
     logs['logs'] = all
     return logs
+
 
 #
 # Parses the output of a Docker image command to a python List
@@ -240,5 +320,9 @@ def docker_images_to_array(output):
         all.append(each)
     return all
 
+
+#
+# Main
+#
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=8080, debug=True)
