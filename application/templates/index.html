@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>DockerCMS Restful API</title>
+	</head>
+	<body>
+		<table border="0" cellpadding="10">
+			<tr>
+				<td>
+				 </td>
+				<td>
+					<h1>DockerCMS Restful API</h1>
+				</td>
+			</tr>
+		</table>
+		<p>DockerCMS Homepage</p>
+		<p>To prove that they work, you can execute either of the following links:
+		<ul>
+			<p>To view main index page vist the route: http://35.195.196.150:5000 </p>
+			<p>To list all containers visit the route: http://35.195.196.150:5000/GET/containers</p>
+			<p>To list running containers only vist the route: http://35.195.196.150:5000/GET/containers?state=running</p>
+			<p>To inspect a specific container vist the route: http://35.195.196.150:5000/GET/containers/id</p>
+			<p>To dump specific container logs visit the route: http://35.195.196.150:5000/GET/containers/id/logs</p>
+			<p>To list all service visit the route: http://35.195.196.150:5000/GET/services</p>
+			<p>To list all nodes in swarm visit the route: http://35.195.196.150:5000/GET/nodes</p>
+			<p>To create a new container in swarm visit the route: http://35.195.196.150:5000/POST/containers</p>
+			<p>To change a container state visit the route: http://35.195.196.150:5000/PATCH/containers/id</p>
+			<p>To delete a specific container visit the route: http://35.195.196.150:5000/DELETE/containers/id</p>
+			<p>To list all images visit the route: http://35.195.196.150:5000/GET/images</p>
+			<p>To create a new image visit the route: http://35.195.196.150:5000/POST/images</p>
+			<p>To change a specific image attributes visit the route: http://35.195.196.150:5000/PATCH/images/id</p>
+			<p>To delete a specific image visit the route: http://35.195.196.150:5000/DELETE/images/id</p>
+			<p>To delete all images visit the route: http://35.195.196.150:5000/DELETE/images</p>
+			</ul>
+			<ul>
+				<p>Data appeared below</p>
+				{{name}}
+			</ul>
+	</body>
+</html>
