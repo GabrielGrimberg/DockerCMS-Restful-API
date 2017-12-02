@@ -214,7 +214,9 @@ def containers_remove(id):
     Delete a specific container - must be already stopped/killed
 
     """
-    resp = ''
+    docker ('rm', id)
+    
+    resp = '{"id": "%s"}' % id
     return Response(response=resp, mimetype="application/json")
 
     
@@ -224,10 +226,17 @@ def containers_remove(id):
 @app.route('/containers', methods=['DELETE'])
 def containers_remove_all():
     """
+    
     Force remove all containers - dangrous!
 
     """
-    resp = ''
+    
+    for containerschk in docker('ps', '-a', '-q').split('\n'):
+        if containerschk:
+            docker('stop', containerschk)
+            docker('rm', containerschk)
+        
+    resp = 'The containers have all been deleted.'
     return Response(response=resp, mimetype="application/json")
 
  
