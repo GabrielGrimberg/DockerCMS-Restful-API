@@ -39,10 +39,10 @@ POST /containers                    Create a new container                      
 PATCH /containers/<id>              Change a container's state                   - Yes.
 PATCH /images/<id>                  Change a specific image's attributes         - Yes.
 
-DELETE /containers/<id>             Delete a specific container
+DELETE /containers/<id>             Delete a specific container                  - Not Done.
 DELETE /containers                  Delete all containers (including running)    - Not Done.
-DELETE /images/<id>                 Delete a specific image                      - Not Done.
-DELETE /images                      Delete all images                            - Not Done.
+DELETE /images/<id>                 Delete a specific image                      - Done.
+DELETE /images                      Delete all images                            - Done.
 
 """
 
@@ -237,8 +237,11 @@ def containers_remove_all():
 @app.route('/images/<id>', methods=['DELETE'])
 def images_remove(id):
     """
+    
     Delete a specific image
+    
     """
+    
     docker ('rmi', id)
     resp = '{"id": "%s"}' % id
     return Response(response=resp, mimetype="application/json")
@@ -250,11 +253,18 @@ def images_remove(id):
 @app.route('/images', methods=['DELETE'])
 def images_remove_all():
     """
+    
     Force remove all images - dangrous!
 
     """
+    
+    imgcheck = docker('images', '-q').split('\n')
+    
+    for id in imgcheck:
+        if id:
+            docker('rmi', '-f', id)
  
-    resp = ''
+    resp = 'The images have all been deleted.'
     return Response(response=resp, mimetype="application/json")
 
 
