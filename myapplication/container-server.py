@@ -25,22 +25,22 @@ def index():
     return """
 Available API endpoints:
 
-GET /containers                     List all containers                          - Yes.
-GET /containers?state=running       List running containers (only)               - Not Done.
-GET /containers/<id>                Inspect a specific container                 - Yes.
-GET /containers/<id>/logs           Dump specific container logs                 - Yes.
-GET /services                       List all service                             - Not Done.
-GET /nodes                          List all nodes in the swarm                  - Not Done.
-GET /images                         List all images                              - Yes.
+GET /containers                     List all containers                          - Done.
+GET /containers?state=running       List running containers (only)               - Done.
+GET /containers/<id>                Inspect a specific container                 - Done.
+GET /containers/<id>/logs           Dump specific container logs                 - Done.
+GET /services                       List all service                             - Done.
+GET /nodes                          List all nodes in the swarm                  - Done.
+GET /images                         List all images                              - Done.
 
-POST /images                        Create a new image                           - Yes.
-POST /containers                    Create a new container                       - Yes.
+POST /images                        Create a new image                           - Done.
+POST /containers                    Create a new container                       - Done.
 
-PATCH /containers/<id>              Change a container's state                   - Yes.
-PATCH /images/<id>                  Change a specific image's attributes         - Yes.
+PATCH /containers/<id>              Change a container's state                   - Done.
+PATCH /images/<id>                  Change a specific image's attributes         - Done.
 
-DELETE /containers/<id>             Delete a specific container                  - Not Done.
-DELETE /containers                  Delete all containers (including running)    - Not Done.
+DELETE /containers/<id>             Delete a specific container                  - Done.
+DELETE /containers                  Delete all containers (including running)    - Done.
 DELETE /images/<id>                 Delete a specific image                      - Done.
 DELETE /images                      Delete all images                            - Done.
 
@@ -83,8 +83,9 @@ def containers_show(id):
     Inspect specific container
 
     """
-
-    resp = ''
+    
+    getcid = docker('inspect', id)
+    resp = json.dumps(json.loads(getcid) )
 
     return Response(response=resp, mimetype="application/json")
 
@@ -98,10 +99,45 @@ def containers_log(id):
     Dump specific container logs
 
     """
-    resp = ''
+    
+    # Another way to list.
+    getlogs = docker('container', 'logs', id)
+    
+    resp = json.dumps(docker_logs_to_object(id, getlogs) )
     return Response(response=resp, mimetype="application/json")
 
 
+#
+# List all services.
+#
+@app.route('/nodes', methods=['GET'])
+def servies_index():
+    """
+    List all services
+    
+    """
+    
+    getservice = docker_services_to_array(docker('service', 'ls') )
+    
+    resp = json.dumps(getservice)
+    return Response(response=resp, mimetype="application/json")
+    
+#
+# List all nodes in the swarm.
+#
+@app.route('/nodes', methods=['GET'])
+def nodes_index():
+    """
+    List all nodes in the swarm
+    
+    """
+    
+    getnodes = docker_nodes_to_array(docker('node', 'ls') )
+    
+    resp = json.dumps(getnodes)
+    return Response(response=resp, mimetype="application/json")
+    
+    
 #
 # List all images.
 #
@@ -113,7 +149,9 @@ def images_index():
     Complete the code below generating a valid response. 
     """
     
-    resp = ''
+    getimages = docker_images_to_array(docker('images') )
+    
+    resp = json.dumps(getimages)
     return Response(response=resp, mimetype="application/json")
     
 
@@ -134,7 +172,11 @@ def images_create():
     """
     dockerfile = request.files['file']
     
-    resp = ''
+    dockerfile.save('Dockerfile')
+    
+    docker('build', '-t', 'upload', '.')
+    
+    resp = 'A new image has been built.'
     return Response(response=resp, mimetype="application/json")
   
   
@@ -197,7 +239,12 @@ def images_update(id):
     curl -s -X PATCH -H 'Content-Type: application/json' http://localhost:8080/images/7f2619ed1768 -d '{"tag": "test:1.0"}'
 
     """
-    resp = ''
+    
+    body = request.get_json(force = True)
+    imgtag = body['tag']
+    docker('tag', id, imgtag)
+    
+    resp = 'The attributes of the image has been updated.'
     return Response(response=resp, mimetype="application/json")
     
     
