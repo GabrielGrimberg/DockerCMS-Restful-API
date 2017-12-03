@@ -9,25 +9,35 @@ A container management system (DockerCMS) using a restful API that manages conta
 
 ### Available API endpoints:
 
-#### GET /containers                     List all containers                         
-#### GET /containers?state=running       List running containers (only)      
-#### GET /containers/<id>                Inspect a specific container      
-#### GET /containers/<id>/logs           Dump specific container logs         
-#### GET /services                       List all service                   
-#### GET /nodes                          List all nodes in the swarm    
-#### GET /images                         List all images         
+| *Method*       | *Endpoint*      | *About*      |
+| -------------  | ------------- |:-------------:|
+| GET| /containers | List all containers |
+| GET| /containers?state=running  | List running containers (only)  |
+| GET| /containers/id  | Dump specific container logs |
+| GET| /containers/id/logs | List all containers |
+| GET| /services  | List all service  |
+| GET| /nodes  | List all nodes in the swarm  |
+| GET| /images  | List all images |
+| POST| /images | Create a new image |
+| POST| /containers | Create a new container |
+| PATCH| /containers/id | Change a container's state  |
+| PATCH| /images/id | Change a specific image's attributes |
+| DELETE| /containers/<id> | Delete a specific container |
+| DELETE| /images/id | Delete all containers (including running)  |
+| DELETE| /images/id | Delete a specific image  |
+| DELETE| /images/id | Delete all images |
+  
+### How to Run
 
-#### POST /images                        Create a new image                 
-#### POST /containers                    Create a new container       
-
-#### PATCH /containers/<id>              Change a container's state              
-#### PATCH /images/<id>                  Change a specific image's attributes    
-
-#### DELETE /containers/<id>             Delete a specific container
-#### DELETE /containers                  Delete all containers (including running)   
-#### DELETE /images/<id>                 Delete a specific image                     
-#### DELETE /images                      Delete all images        
-
+1. Clone this repo into your VM.
+2. Change your directory (CD) into the repo.
+3. Change your directory (CD) into the **my_application** folder.
+4. Run: python **container-server.py** (Make sure to have pip installed).
+5. Visit: **35.205.198.91:8080** and you will see the index page.
+6. Read the index page.
+7. Example: **To list all images visit the route: http://35.205.198.91:8080/images**
+8. Go to: http://35.205.198.91:8080/images and you will see all the images.
+                                                                                              
 ### Docker Swarm
 
 - Created with one mananger and two workers.
@@ -44,17 +54,13 @@ A container management system (DockerCMS) using a restful API that manages conta
 - ```sudo docker swarm init```
 - Get the code and copy and paste that code into the workers.
 - To check they have joined: ```docker node ls```
-- Creating: NGINX Web Server ```docker service create --replicas 5 -p 80:80 --name web nginx```
-- To check: docker service ps web
+- Creating: NGINX Web Server ```docker service create --replicas 5 -p 80:80 --name service1 nginx```
+- To check: docker service ps service1
 
 
 ### Testing the DockerCMS
 
-- **Tests the API using Python Code**
-
-- In the Testing folder.
-
-- **Tests the API using Bash**
+To test this API using Python go into the **Testing** folder to view all 16 tests. Another way to test is by using *curl* which can be viewed below.
 
 #### Test 1: Main Page
 ```curl http://35.205.198.91:8080```
