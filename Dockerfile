@@ -17,7 +17,7 @@ RUN apt-get update
 RUN apt-get install -y python3 python3-pip mysql-client libmysqlclient-dev
 
 #copy container-server.py into /application folder
-ADD . /myapplication
+ADD . /my_application
 
 # Copy the application folder inside the container
 # COPY /templates /application
@@ -26,14 +26,14 @@ ADD . /myapplication
 RUN pip3 install --upgrade pip
 
 # Get pip to download and install requirements:
-RUN pip3 install -r /myapplication/requirements.txt
+RUN pip3 install -r /my_application/requirements.txt
 
 # Expose ports
 EXPOSE 5000 8000
 # EXPOSE 8000
 
 # Set the default directory where CMD will execute
-WORKDIR /myapplication
+WORKDIR /my_application
 
 # Set the default command to execute
 # when creating a new container
