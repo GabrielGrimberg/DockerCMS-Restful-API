@@ -116,7 +116,7 @@ def servies_index():
     
     """
     
-    getservice = docker_services_to_array(docker('service', 'ls') )
+    getservice = docker_ps_to_array(docker('service', 'ls') )
     
     resp = json.dumps(getservice)
     return Response(response=resp, mimetype="application/json")
@@ -131,7 +131,7 @@ def nodes_index():
     
     """
     
-    getnodes = docker_nodes_to_array(docker('node', 'ls') )
+    getnodes = docker_node_to_array(docker('node', 'ls') )
     
     resp = json.dumps(getnodes)
     return Response(response=resp, mimetype="application/json")
@@ -354,6 +354,21 @@ def docker_ps_to_array(output):
         each['image'] = c[1]
         each['name'] = c[-1]
         each['ports'] = c[-2]
+        all.append(each)
+    return all
+
+
+#
+# Parses the output of the Docker PS command to a python node.
+#
+def docker_node_to_array(output):
+    all = []
+    for c in [line.split() for line in output.splitlines()[1:]]:
+        each = {}
+        each['id'] = c[0]
+        each['hostname'] = c[1]
+        each['status'] = c[2]
+        each['available'] = c[3]
         all.append(each)
     return all
 
