@@ -13,8 +13,9 @@ RUN apt-get update
 # Install Python and Basic Python Tools
 RUN apt-get install -y python3 python3-pip
 
-#copy app.py into /app folder 
-ADD /myapp /myapp
+# Copy container-server.py into /app folder 
+ADD /my_application /my_application
+
 # Upgrade  PIP
 RUN pip3 install --upgrade pip
 
