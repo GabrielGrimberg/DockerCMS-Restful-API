@@ -1,6 +1,10 @@
 # DockerCMS Restful API
 A container management system (DockerCMS) using a restful API that manages containers, images, services and stacks by defining several routes for each task.
 
+- Name: Gabriel Grimberg
+- Student Number: C15478448
+- Assignment Link: https://github.com/GabrielGrimberg/DockerCMS-Restful-API
+
 #### DockerCMS Restful API Video Demo
 
 - Click on the image below to play the video.
