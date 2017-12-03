@@ -25,17 +25,12 @@ A container management system (DockerCMS) using a restful API that manages conta
 
 - **Tests the API using Python Code**
 
-<<<<<<< HEAD
 - In the Testing folder.
 
 - **Tests the API using Bash**
 
 #### Test 1: Main Page
 curl http://35.195.116.183:8080
-=======
-### Test 1: Main Page
-```curl http://35.195.116.183:8080```
->>>>>>> 23f7c8f05a9f4bdf4e6fb61de094f30704b0590d
 
 
 **GET**
