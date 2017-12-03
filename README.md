@@ -1,6 +1,33 @@
 # DockerCMS Restful API
 A container management system (DockerCMS) using a restful API that manages containers, images, services and stacks by defining several routes for each task.
 
+#### DockerCMS Restful API Video Demo
+
+- Click on the image below to play the video.
+
+[![Video](http://img.youtube.com/vi/5am1bRk3_lU/0.jpg)](https://youtu.be/5am1bRk3_lU)
+
+### Available API endpoints:
+
+#### GET /containers                     List all containers                         
+#### GET /containers?state=running       List running containers (only)      
+#### GET /containers/<id>                Inspect a specific container      
+#### GET /containers/<id>/logs           Dump specific container logs         
+#### GET /services                       List all service                   
+#### GET /nodes                          List all nodes in the swarm    
+#### GET /images                         List all images         
+
+#### POST /images                        Create a new image                 
+#### POST /containers                    Create a new container       
+
+#### PATCH /containers/<id>              Change a container's state              
+#### PATCH /images/<id>                  Change a specific image's attributes    
+
+#### DELETE /containers/<id>             Delete a specific container
+#### DELETE /containers                  Delete all containers (including running)   
+#### DELETE /images/<id>                 Delete a specific image                     
+#### DELETE /images                      Delete all images        
+
 ### Docker Swarm
 
 - Created with one mananger and two workers.
