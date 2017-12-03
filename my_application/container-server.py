@@ -8,6 +8,27 @@
 #                                     #
 #######################################
 
+#Available API endpoints:
+
+#GET /containers                     List all containers                          - Done.
+#GET /containers?state=running       List running containers (only)               - Done.
+#GET /containers/<id>                Inspect a specific container                 - Done.
+#GET /containers/<id>/logs           Dump specific container logs                 - Done.
+#GET /services                       List all service                             - Done.
+#GET /nodes                          List all nodes in the swarm                  - Done.
+#GET /images                         List all images                              - Done.
+
+#POST /images                        Create a new image                           - Done.
+#POST /containers                    Create a new container                       - Done.
+
+#PATCH /containers/<id>              Change a container's state                   - Done.
+#PATCH /images/<id>                  Change a specific image's attributes         - Done.
+
+#DELETE /containers/<id>             Delete a specific container                  - Done.
+#DELETE /containers                  Delete all containers (including running)    - Done.
+#DELETE /images/<id>                 Delete a specific image                      - Done.
+#DELETE /images                      Delete all images                            - Done.
+
 #
 # Imports needed for this Restful API.
 #
@@ -22,29 +43,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return """
-Available API endpoints:
-
-GET /containers                     List all containers                          - Done.
-GET /containers?state=running       List running containers (only)               - Done.
-GET /containers/<id>                Inspect a specific container                 - Done.
-GET /containers/<id>/logs           Dump specific container logs                 - Done.
-GET /services                       List all service                             - Done.
-GET /nodes                          List all nodes in the swarm                  - Done.
-GET /images                         List all images                              - Done.
-
-POST /images                        Create a new image                           - Done.
-POST /containers                    Create a new container                       - Done.
-
-PATCH /containers/<id>              Change a container's state                   - Done.
-PATCH /images/<id>                  Change a specific image's attributes         - Done.
-
-DELETE /containers/<id>             Delete a specific container                  - Done.
-DELETE /containers                  Delete all containers (including running)    - Done.
-DELETE /images/<id>                 Delete a specific image                      - Done.
-DELETE /images                      Delete all images                            - Done.
-
-"""
+    return render_template('index.html')
 
 #############################
 #          GET              #
