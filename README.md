@@ -23,7 +23,7 @@ A container management system (DockerCMS) using a restful API that manages conta
 - Tests the API using Bash
 
 ### Test 1: Main Page
-curl http://35.195.116.183:8080
+```curl http://35.195.116.183:8080```
 
 **GET**
 
