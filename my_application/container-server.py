@@ -109,7 +109,7 @@ def containers_log(id):
 #
 # List all services.
 #
-@app.route('/nodes', methods=['GET'])
+@app.route('/services', methods=['GET'])
 def servies_index():
     """
     List all services
