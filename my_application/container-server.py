@@ -115,10 +115,10 @@ def servies_index():
     List all services
     
     """
-    
-    getservice = docker_ps_to_array(docker('service', 'ls') )
-    
-    resp = json.dumps(getservice)
+
+    getservies = docker('service', 'ls')
+    resp = json.dumps(docker_ps_to_array(getservies))
+
     return Response(response=resp, mimetype="application/json")
     
 #
@@ -131,11 +131,10 @@ def nodes_index():
     
     """
     
-    getnodes = docker_node_to_array(docker('node', 'ls') )
+    getnodes = docker('node', 'ls')
     
-    resp = json.dumps(getnodes)
+    resp = json.dumps(docker_node_to_array(getnodes))
     return Response(response=resp, mimetype="application/json")
-    
     
 #
 # List all images.
@@ -274,15 +273,27 @@ def containers_remove_all():
     """
     
     Force remove all containers - dangrous!
-
+    
     """
     
-    for containerschk in docker('ps', '-a', '-q').split('\n'):
-        if containerschk:
-            docker('stop', containerschk)
-            docker('rm', containerschk)
-        
-    resp = 'The containers have all been deleted.'
+    containersx = docker('ps', '-a', '-q')
+    
+    conarr = []
+    id = ''
+
+    for x in containersx.decode('utf-8'):
+        if x == '\n':
+            conarr.append(id)
+            id = ''
+        else:
+            id += c
+
+    output = bytearray()
+    
+    for x in conarr:
+        output.extend(docker('container', 'rm', c))
+
+    resp = json.dumps(output.decode('utf-8'))
     return Response(response=resp, mimetype="application/json")
 
  
@@ -308,18 +319,26 @@ def images_remove(id):
 @app.route('/images', methods=['DELETE'])
 def images_remove_all():
     """
-    
     Force remove all images - dangrous!
-
     """
+
+    images = docker('images', '-q')
+    imgarr = []
+    id = ''
+
+    for i in images.decode('utf-8'):
+        if i == '\n':
+            imgarr.append(id)
+            id = ''
+        else:
+            id += i
+
+    output = bytearray()
     
-    imgcheck = docker('images', '-q').split('\n')
-    
-    for id in imgcheck:
-        if id:
-            docker('rmi', '-f', id)
- 
-    resp = 'The images have all been deleted.'
+    for i in imgarr:
+        output.extend(docker('rmi', i))
+
+    resp = json.dumps(output.decode('utf-8'))
     return Response(response=resp, mimetype="application/json")
 
 
@@ -360,15 +379,18 @@ def docker_ps_to_array(output):
 
 #
 # Parses the output of the Docker PS command to a python node.
-#
+#    
 def docker_node_to_array(output):
     all = []
     for c in [line.split() for line in output.splitlines()[1:]]:
         each = {}
-        each['id'] = c[0]
-        each['hostname'] = c[1]
-        each['status'] = c[2]
-        each['available'] = c[3]
+        each['id'] = c[0].decode('utf-8')
+
+        #if manager
+        if c[1].decode('utf-8') == '*':
+            each['hostname'] = 'manager'
+        else:
+            each['hostname'] = c[1].decode('utf-8')
         all.append(each)
     return all
 

@@ -7,6 +7,8 @@
 #                                     #
 #######################################
 
+import requests
+import json
 
 #############################
 #          Index            #
@@ -14,11 +16,10 @@
 #
 ### 1. View Index
 #
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080").text
-print(response)
+def index(ip):
+	url = 'http://'+ip+':8080/'
+	response = requests.get(url).text
+	print(response)
 
 
 #############################
@@ -27,85 +28,86 @@ print(response)
 #
 ### 2 View Containers
 #
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/containers").json()
-print(response)
+def list_containers(ip):
+	url = 'http://'+ip+':8080/containers'
+	response = requests.get(url).json()
+	print(response)
 
 
 #
 ### 3 View Running Containers
 #
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/containers", params='state=running').json()
-print(response)
-
-
-#
-### 4 Inspect a specific container
-#
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/containers/41144d5b07a8").json()
-print(response)
+def list_containers_running(ip):
+	url = 'http://'+ip+':8080/containers'
+	response = requests.get(url, params='state=running').json()
+	print(response)
 
 
 #
-### 5 Dump specific container logs.
+### 4 View all images.
 #
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/containers/41144d5b07a8/logs").json()
-print(response)
-
-
-#
-### 6 List all services
-#
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/services").json()
-print(response)
+def list_images(ip):
+	url = 'http://'+ip+':8080/images'
+	response = requests.get(url).json()
+	print(response)
 
 
 #
-### 7 List all nodes in the swarm
+### 5 Inspect a specific container
 #
-import requests
-import json
+def view_container(ip, id):
+	url = 'http://'+ip+':8080/containers/'+id
+	response = requests.get(url).json()
+	print(response)
+
+
+#
+### 6 Dump specific container logs.
+#
+def container_logs(ip, id):
+	url = 'http://'+ip+':8080/containers/'+id+'/logs'
+	response = requests.get(url).json()
+	print(response)
+
+
+#
+### 7 List all services
+#
+def list_all_services(ip):
+	url = 'http://'+ip+':8080/services'
+	response = requests.get(url).json()
+	print(response)
+
+#
+### 8 List all nodes in the swarm
+#
+def list_all_nodes(ip):
+	url = 'http://'+ip+':8080/nodes'
+	response = requests.get(url).json()
+	print(response)
 	
-response = requests.get("35.205.198.91:8080/nodes").json()
-print(response)
-
-
-#
-### 8 List all images
-#
-import requests
-import json
-
-response = requests.get("http://35.205.198.91:8080/images").json()
-print(response)
-
 
 #############################
 #          POST             #
 #############################
 #
+### 9 Create a new Image
+#
+def image_create(ip, tag, path):
+	url = 'http://'+ip+':8080/images/'+tag+"/"+path
+	response = requests.post(url)
+	print(response.text)
+
+
+#
 ### 10 Create a new container
 #
-import requests
-import json
-data = {"image": "9ec4d80e0be6"}
-header = {"Content-Type": "application/json"}
-response = requests.post("http://35.205.198.91:8080/containers", data=json.dumps(data), headers=header)
-print(response.json())
+def container_create(ip, id):
+	url = 'http://'+ip+':8080/containers'
+	data = {"image": id}
+	header = {"Content-Type": "application/json"}
+	response = requests.post(url, data=json.dumps(data), headers=header)
+	print(response.json())
 
 
 #############################
@@ -114,66 +116,74 @@ print(response.json())
 #
 ### 11 Change a container's state
 #
-import requests
-import json
-
-data = {"state": "running"}
-header = {"Content-Type": "application/json"}
-response = requests.patch("http://35.205.198.91:8080/containers/ce40cb8539c9", data=json.dumps(data), headers=header).json()
-print(response)
-
+def container_update(ip, id, state):
+	url = 'http://'+ip+':8080/containers/'+id
+	data ={"state": state}
+	header = {"Content-Type": "application/json"}
+	response = requests.patch(url, data=json.dumps(data), headers=header).json()
+	print(response)
 
 #
 ### 12 Change a specific image's attributes
 #
-import requests
-import json
-
-data ={"tag": "test:1.0"}
-header = {"Content-Type": "application/json"}
-response = requests.patch("http://35.205.198.91:8080/images/9e7424e5dbae", data=json.dumps(data), headers=header).json()
-print(response)
-
-
+def image_update(ip, id, tag):
+	url = 'http://'+ip+':8080/images/'+id
+	data ={"tag": tag}
+	header = {"Content-Type": "application/json"}
+	response = requests.patch(url, data=json.dumps(data), headers=header).json()
+	print(response)
+	
+	
 #############################
 #          DELETE           #
 #############################
 #
 ### 13 Delete a specific container
 #
-import requests
-import json
-
-response = requests.delete("http://35.205.198.91:8080/containers/45174b3ce50e").json()
-print(response)
+def container_delete(ip, id):
+	url = 'http://'+ip+':8080/containers/'+id
+	response = requests.delete(url).json()
+	print(response)
 
 
 #
 ### 14 Delete all containers including running ones
 #
-import requests
-import json
-
-response = requests.delete("http://35.205.198.91:8080/containers").json()
-print(response)
+def container_delete_all(ip):
+	url = 'http://'+ip+':8080/containers'
+	response = requests.delete(url).json()
+	print(response)
 
 
 #
 ### 15 Delete a specific image
 #
-import requests
-import json
-
-response = requests.delete("http://35.205.198.91:8080/images/9e7424e5dbae").json()
-print(response)
+def image_delete(ip, id):
+	url = 'http://'+ip+':8080/images/'+id
+	response = requests.delete(url).json()
+	print(response)
 
 
 #
 ### 16 Delete all images
 #
-import requests
-import json
+def image_delete_all(ip):
+	url = 'http://'+ip+':8080/images'
+	response = requests.delete(url).json()
+	print(response)
 
-response = requests.delete("http://35.205.198.91:8080/images").json()
-print(response)
 
+#
+### Main
+#
+if __name__ == "__main__":
+	ip = 'FILL IP HERE'
+	
+	## Index.
+	index(ip)
+	
+	## - Example -
+	## Call whichever function you want here.
+	
+	## View containers.
+	list_containers(ip)
